@@ -1,5 +1,6 @@
 import { render } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
+import "cally";
 import "./styles.css";
 
 type MattermostReaction = {
@@ -157,6 +158,21 @@ function subtractDays(date: Date, days: number) {
   const next = new Date(date);
   next.setDate(next.getDate() - days);
   return next;
+}
+
+function formatDateLabel(value: string) {
+  if (!value) {
+    return "Выбрать дату";
+  }
+
+  return new Intl.DateTimeFormat("ru-RU", {
+    dateStyle: "medium",
+  }).format(new Date(`${value}T00:00:00`));
+}
+
+function readCalendarValue(event: Event) {
+  const target = event.currentTarget as HTMLElement & { value?: string };
+  return target.value ?? "";
 }
 
 function MattermostApp() {
@@ -443,26 +459,110 @@ function MattermostApp() {
                   <label class="field-card">
                     <span class="field-kicker">Период</span>
                     <span class="field-label">С даты</span>
-                    <input
-                      class="text-input"
-                      type="date"
-                      value={fromDate}
-                      min={report.generatedAt ? toDateInputValue(new Date(Date.parse(report.generatedAt) - report.settings.lookbackDays * 86400000)) : undefined}
-                      max={toDate || undefined}
-                      onInput={(event) => setFromDate((event.target as HTMLInputElement).value)}
-                    />
+                    <div class="calendar-picker">
+                      <button
+                        type="button"
+                        class="calendar-trigger"
+                        popovertarget="from-date-popover"
+                        style={{ anchorName: "--from-date-trigger" }}
+                      >
+                        <span class="calendar-trigger-label">{formatDateLabel(fromDate)}</span>
+                        <span class="calendar-trigger-icon" aria-hidden="true">
+                          ▾
+                        </span>
+                      </button>
+                      <div
+                        popover="auto"
+                        id="from-date-popover"
+                        class="calendar-popover"
+                        style={{ positionAnchor: "--from-date-trigger" }}
+                      >
+                        <calendar-date
+                          class="cally-surface"
+                          value={fromDate}
+                          onChange={(event) => {
+                            const nextValue = readCalendarValue(event);
+                            if (nextValue) {
+                              setFromDate(nextValue);
+                            }
+                          }}
+                        >
+                          <svg
+                            aria-label="Previous"
+                            class="calendar-nav-icon"
+                            slot="previous"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                          >
+                            <path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                          </svg>
+                          <svg
+                            aria-label="Next"
+                            class="calendar-nav-icon"
+                            slot="next"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                          >
+                            <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                          </svg>
+                          <calendar-month />
+                        </calendar-date>
+                      </div>
+                    </div>
                   </label>
                   <label class="field-card">
                     <span class="field-kicker">Период</span>
                     <span class="field-label">По дату</span>
-                    <input
-                      class="text-input"
-                      type="date"
-                      value={toDate}
-                      min={fromDate || undefined}
-                      max={report.generatedAt ? toDateInputValue(new Date(report.generatedAt)) : undefined}
-                      onInput={(event) => setToDate((event.target as HTMLInputElement).value)}
-                    />
+                    <div class="calendar-picker">
+                      <button
+                        type="button"
+                        class="calendar-trigger"
+                        popovertarget="to-date-popover"
+                        style={{ anchorName: "--to-date-trigger" }}
+                      >
+                        <span class="calendar-trigger-label">{formatDateLabel(toDate)}</span>
+                        <span class="calendar-trigger-icon" aria-hidden="true">
+                          ▾
+                        </span>
+                      </button>
+                      <div
+                        popover="auto"
+                        id="to-date-popover"
+                        class="calendar-popover"
+                        style={{ positionAnchor: "--to-date-trigger" }}
+                      >
+                        <calendar-date
+                          class="cally-surface"
+                          value={toDate}
+                          onChange={(event) => {
+                            const nextValue = readCalendarValue(event);
+                            if (nextValue) {
+                              setToDate(nextValue);
+                            }
+                          }}
+                        >
+                          <svg
+                            aria-label="Previous"
+                            class="calendar-nav-icon"
+                            slot="previous"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                          >
+                            <path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                          </svg>
+                          <svg
+                            aria-label="Next"
+                            class="calendar-nav-icon"
+                            slot="next"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                          >
+                            <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                          </svg>
+                          <calendar-month />
+                        </calendar-date>
+                      </div>
+                    </div>
                   </label>
                   <label class="field-card">
                     <span class="field-kicker">Порог популярности</span>
@@ -483,20 +583,25 @@ function MattermostApp() {
                   <label class="field-card">
                     <span class="field-kicker">Метрика</span>
                     <span class="field-label">Режим подсчета</span>
-                    <select
-                      class="text-input"
-                      value={countMode}
-                      onInput={(event) =>
-                        setCountMode(
-                          (event.target as HTMLSelectElement).value as
-                            | "unique_reactors"
-                            | "all_reactions",
-                        )
-                      }
-                    >
-                      <option value="unique_reactors">Уникальные реакторы</option>
-                      <option value="all_reactions">Все реакции</option>
-                    </select>
+                    <div class="select-shell">
+                      <select
+                        class="text-input select-input"
+                        value={countMode}
+                        onInput={(event) =>
+                          setCountMode(
+                            (event.target as HTMLSelectElement).value as
+                              | "unique_reactors"
+                              | "all_reactions",
+                          )
+                        }
+                      >
+                        <option value="unique_reactors">Уникальные реакторы</option>
+                        <option value="all_reactions">Все реакции</option>
+                      </select>
+                      <span class="select-chevron" aria-hidden="true">
+                        ▾
+                      </span>
+                    </div>
                   </label>
                 </form>
 

@@ -30,6 +30,11 @@ select {
   font: inherit;
 }
 
+calendar-date,
+calendar-month {
+  display: block;
+}
+
 button,
 a {
   transition:
@@ -225,6 +230,63 @@ h1 {
   outline-offset: 2px;
 }
 
+.calendar-picker {
+  position: relative;
+}
+
+.calendar-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.04);
+  color: #f3efe6;
+  padding: 0.95rem 1rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.calendar-trigger-label {
+  text-align: left;
+}
+
+.calendar-trigger-icon,
+.select-chevron {
+  color: rgba(243, 239, 230, 0.62);
+  font-size: 0.95rem;
+}
+
+.calendar-popover {
+  margin: 10px 0 0;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  background: rgba(17, 16, 13, 0.96);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.calendar-popover:popover-open {
+  display: block;
+}
+
+.cally-surface {
+  --accent-color: #e0a458;
+  --bg-color: transparent;
+  --text-color: #f3efe6;
+  --muted-text-color: rgba(243, 239, 230, 0.62);
+  --border-color: rgba(255, 255, 255, 0.08);
+}
+
+.calendar-nav-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .settings-surface {
   padding: 18px;
   border-radius: 22px;
@@ -273,6 +335,23 @@ h1 {
   top: 50%;
   transform: translateY(-50%);
   color: rgba(243, 239, 230, 0.64);
+}
+
+.select-shell {
+  position: relative;
+}
+
+.select-input {
+  appearance: none;
+  padding-right: 3rem;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .toggle-grid {
