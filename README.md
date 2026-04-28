@@ -22,6 +22,7 @@
 - `OUTLINE_API_KEY=replace_me`
 - `OUTLINE_DOCUMENT_URL=https://outline.gospodaprogrammisty.ru/doc/javascript-FxjTgSQD6R#h-sostav-uchastnikov`
 - `OUTLINE_DOCUMENT_ID=FxjTgSQD6R`
+- `SITE_ACCESS_PASSWORD=replace_me`
 
 Если позже дойдем до записи в Яндекс Календарь, добавим еще:
 
@@ -68,3 +69,7 @@ npm run sync:outline
 - один источник правды по составу гильдии в Outline
 - одна кнопка синхронизации в GitHub
 - один клик для копирования всех email перед созданием события в Яндекс Календаре
+
+## Ограничение по защите страницы
+
+Пароль на `GitHub Pages` в этом проекте является только защитой от случайного доступа. Это статический сайт без backend, поэтому полноценной серверной авторизации здесь нет.

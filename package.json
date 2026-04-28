@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "sync:outline": "node scripts/sync-outline.mjs",
+    "derive:site-password": "node scripts/derive-site-password-hash.mjs",
     "check": "tsc --noEmit"
   },
   "dependencies": {

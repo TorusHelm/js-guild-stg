@@ -24,6 +24,11 @@ body {
   min-width: 320px;
 }
 
+input,
+button {
+  font: inherit;
+}
+
 button,
 a {
   transition:
@@ -62,6 +67,12 @@ a {
   padding: 40px 0 56px;
 }
 
+.page-shell-centered {
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+}
+
 .hero-card,
 .panel {
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -73,6 +84,11 @@ a {
 .hero-card {
   border-radius: 28px;
   padding: 28px;
+}
+
+.gate-card {
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 .eyebrow {
@@ -131,6 +147,30 @@ h1 {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 24px;
+}
+
+.gate-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.field-label {
+  color: rgba(243, 239, 230, 0.72);
+}
+
+.text-input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f3efe6;
+  padding: 0.95rem 1rem;
+}
+
+.text-input:focus {
+  outline: 2px solid rgba(224, 164, 88, 0.8);
+  outline-offset: 2px;
 }
 
 .action-button,

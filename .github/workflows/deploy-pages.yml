@@ -33,6 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Derive site access hash
+        env:
+          SITE_ACCESS_PASSWORD: ${{ secrets.SITE_ACCESS_PASSWORD }}
+        run: npm run derive:site-password >> $GITHUB_ENV
+
       - name: Build app
         run: npm run build
 

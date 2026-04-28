@@ -21,6 +21,35 @@ type SyncStatus = {
 
 const membersUrl = "./data/members.json";
 const statusUrl = "./data/status.json";
+const accessStorageKey = "js-guild-stg-access";
+const sitePasswordHash = import.meta.env.VITE_SITE_PASSWORD_HASH ?? "";
+const passwordSalt = "js-guild-stg-site-access-v1";
+const passwordIterations = 120000;
+
+async function derivePasswordHash(password: string) {
+  const encoder = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"],
+  );
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: encoder.encode(passwordSalt),
+      iterations: passwordIterations,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    256,
+  );
+
+  return Array.from(new Uint8Array(derivedBits))
+    .map((value) => value.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 function formatDate(value: string | null) {
   if (!value) {
@@ -43,8 +72,28 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<"emails" | "names" | null>(null);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordBusy, setPasswordBusy] = useState(false);
 
   useEffect(() => {
+    const accessToken = window.localStorage.getItem(accessStorageKey);
+    if (accessToken && accessToken === sitePasswordHash) {
+      setIsUnlocked(true);
+      return;
+    }
+
+    if (!sitePasswordHash) {
+      setIsUnlocked(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isUnlocked) {
+      return;
+    }
+
     async function load() {
       setLoading(true);
       setError(null);
@@ -78,7 +127,7 @@ function App() {
     }
 
     void load();
-  }, []);
+  }, [isUnlocked]);
 
   useEffect(() => {
     if (!copied) {
@@ -101,6 +150,61 @@ function App() {
   const names = useMemo(() => members.map((member) => member.fullName).join("\n"), [members]);
 
   const canCopyEmails = emails.length > 0;
+
+  async function handleUnlock(event: Event) {
+    event.preventDefault();
+    setPasswordBusy(true);
+    setPasswordError(null);
+
+    try {
+      const hash = await derivePasswordHash(passwordInput);
+      if (hash !== sitePasswordHash) {
+        setPasswordError("Неверный пароль");
+        return;
+      }
+
+      window.localStorage.setItem(accessStorageKey, hash);
+      setIsUnlocked(true);
+      setPasswordInput("");
+    } finally {
+      setPasswordBusy(false);
+    }
+  }
+
+  if (!isUnlocked) {
+    return (
+      <main class="page-shell page-shell-centered">
+        <section class="hero-card gate-card">
+          <p class="eyebrow">JavaScript Guild</p>
+          <h1>Вход на страницу</h1>
+          <p class="hero-copy">
+            Это мягкая защита от случайного доступа. Для просмотра страницы введи пароль.
+          </p>
+
+          <form class="gate-form" onSubmit={handleUnlock}>
+            <label class="field-label" for="site-password">
+              Пароль
+            </label>
+            <input
+              id="site-password"
+              class="text-input"
+              type="password"
+              value={passwordInput}
+              onInput={(event) => {
+                setPasswordInput((event.target as HTMLInputElement).value);
+                setPasswordError(null);
+              }}
+              autoComplete="current-password"
+            />
+            {passwordError ? <p class="error-state">{passwordError}</p> : null}
+            <button class="action-button" type="submit" disabled={!passwordInput || passwordBusy}>
+              {passwordBusy ? "Проверка..." : "Войти"}
+            </button>
+          </form>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main class="page-shell">
