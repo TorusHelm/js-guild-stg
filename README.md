@@ -7,6 +7,10 @@
 - дает быстрые кнопки для копирования ФИО и всех email
 - запускается вручную через `GitHub Actions`
 
+Сайт:
+
+- https://torushelm.github.io/js-guild-stg/
+
 ## Что уже есть
 
 - `Preact + TypeScript + Vite`
