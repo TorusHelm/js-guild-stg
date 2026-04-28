@@ -262,6 +262,9 @@ function App() {
           >
             Открыть Actions
           </a>
+          <a class="action-link" href="./mattermost.html">
+            Mattermost аналитика
+          </a>
         </div>
       </section>
 

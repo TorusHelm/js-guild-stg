@@ -1,0 +1,57 @@
+{
+  "generatedAt": null,
+  "source": {
+    "baseUrl": "https://mattermost.example.com",
+    "teamSlug": "example-team",
+    "channelSlug": "example-channel",
+    "channelId": "replace_me"
+  },
+  "settings": {
+    "lookbackDays": 90,
+    "thresholdPercent": 20,
+    "defaultPeriodDays": 30,
+    "countMode": "unique_reactors",
+    "includeReplies": false,
+    "includeBots": false,
+    "countAuthorReactions": false
+  },
+  "channel": {
+    "id": "replace_me",
+    "name": "example-channel",
+    "displayName": "Example Channel",
+    "memberCount": 25
+  },
+  "warnings": [
+    "Реальная синхронизация Mattermost еще не запускалась. Заполни Variables и Secrets, затем запусти workflow."
+  ],
+  "users": {
+    "user-1": {
+      "id": "user-1",
+      "username": "ivan",
+      "displayName": "Иван Иванов"
+    },
+    "user-2": {
+      "id": "user-2",
+      "username": "petr",
+      "displayName": "Петр Петров"
+    }
+  },
+  "posts": [
+    {
+      "id": "post-1",
+      "createAt": 1761649200000,
+      "userId": "user-1",
+      "message": "Пример поста для будущего отчета Mattermost.",
+      "replyCount": 2,
+      "isBot": false,
+      "permalink": "https://mattermost.example.com/example-team/pl/post-1",
+      "reactions": [
+        {
+          "emojiName": "thumbsup",
+          "userId": "user-2",
+          "createAt": 1761652800000
+        }
+      ]
+    }
+  ]
+}

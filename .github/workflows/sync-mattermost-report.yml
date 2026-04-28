@@ -1,0 +1,54 @@
+name: Sync Mattermost report
+
+on:
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Sync Mattermost report
+        env:
+          MATTERMOST_BASE_URL: ${{ vars.MATTERMOST_BASE_URL }}
+          MATTERMOST_TOKEN: ${{ secrets.MATTERMOST_TOKEN }}
+          MATTERMOST_TEAM_SLUG: ${{ vars.MATTERMOST_TEAM_SLUG }}
+          MATTERMOST_CHANNEL_SLUG: ${{ vars.MATTERMOST_CHANNEL_SLUG }}
+          MATTERMOST_CHANNEL_ID: ${{ vars.MATTERMOST_CHANNEL_ID }}
+          MATTERMOST_LOOKBACK_DAYS: ${{ vars.MATTERMOST_LOOKBACK_DAYS }}
+          MATTERMOST_THRESHOLD_PERCENT: ${{ vars.MATTERMOST_THRESHOLD_PERCENT }}
+          MATTERMOST_DEFAULT_PERIOD_DAYS: ${{ vars.MATTERMOST_DEFAULT_PERIOD_DAYS }}
+          MATTERMOST_COUNT_MODE: ${{ vars.MATTERMOST_COUNT_MODE }}
+          MATTERMOST_INCLUDE_REPLIES: ${{ vars.MATTERMOST_INCLUDE_REPLIES }}
+          MATTERMOST_INCLUDE_BOTS: ${{ vars.MATTERMOST_INCLUDE_BOTS }}
+          MATTERMOST_COUNT_AUTHOR_REACTIONS: ${{ vars.MATTERMOST_COUNT_AUTHOR_REACTIONS }}
+        run: npm run sync:mattermost
+
+      - name: Commit updated report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/mattermost-report.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: sync mattermost report"
+          git push

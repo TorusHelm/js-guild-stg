@@ -200,6 +200,17 @@ h1 {
   margin-top: 18px;
 }
 
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field-group {
+  display: grid;
+  gap: 8px;
+}
+
 .panel {
   border-radius: 24px;
   padding: 24px;
@@ -261,6 +272,44 @@ th {
   padding-left: 1.2rem;
 }
 
+.stats-grid-compact {
+  margin-top: 18px;
+}
+
+.report-panel {
+  margin-top: 18px;
+}
+
+.post-list {
+  display: grid;
+  gap: 14px;
+}
+
+.post-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.post-card-header,
+.post-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.post-card-header span,
+.post-metrics span,
+.inline-link {
+  color: rgba(243, 239, 230, 0.72);
+}
+
+.post-message {
+  margin: 0.85rem 0;
+}
+
 .empty-state,
 .error-state {
   color: rgba(243, 239, 230, 0.72);
@@ -272,7 +321,8 @@ th {
 
 @media (max-width: 900px) {
   .stats-grid,
-  .content-grid {
+  .content-grid,
+  .filter-grid {
     grid-template-columns: 1fr;
   }
 }

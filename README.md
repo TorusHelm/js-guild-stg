@@ -11,13 +11,16 @@
 
 - Site: https://torushelm.github.io/js-guild-stg/
 - Actions: https://github.com/TorusHelm/js-guild-stg/actions
+- Mattermost report: https://torushelm.github.io/js-guild-stg/mattermost.html
 
 ## Что уже есть
 
 - `Preact + TypeScript + Vite`
 - workflow `Sync guild roster` для ручной синхронизации
+- workflow `Sync Mattermost report` для ручной синхронизации Mattermost
 - workflow `Deploy Pages` для публикации статической страницы
 - sync-скрипт `scripts/sync-outline.mjs`
+- sync-скрипт `scripts/sync-mattermost.mjs`
 
 ## Что нужно заполнить в GitHub Secrets
 
@@ -28,6 +31,21 @@
 - `OUTLINE_DOCUMENT_URL=https://outline.gospodaprogrammisty.ru/doc/javascript-FxjTgSQD6R#h-sostav-uchastnikov`
 - `OUTLINE_DOCUMENT_ID=FxjTgSQD6R`
 - `SITE_ACCESS_PASSWORD=replace_me`
+- `MATTERMOST_TOKEN=replace_me`
+
+Создай в репозитории эти variables:
+
+- `MATTERMOST_BASE_URL=https://mattermost.example.com`
+- `MATTERMOST_TEAM_SLUG=replace_me`
+- `MATTERMOST_CHANNEL_SLUG=replace_me`
+- `MATTERMOST_CHANNEL_ID=`
+- `MATTERMOST_LOOKBACK_DAYS=90`
+- `MATTERMOST_THRESHOLD_PERCENT=20`
+- `MATTERMOST_DEFAULT_PERIOD_DAYS=30`
+- `MATTERMOST_COUNT_MODE=unique_reactors`
+- `MATTERMOST_INCLUDE_REPLIES=false`
+- `MATTERMOST_INCLUDE_BOTS=false`
+- `MATTERMOST_COUNT_AUTHOR_REACTIONS=false`
 
 Если позже дойдем до записи в Яндекс Календарь, добавим еще:
 
