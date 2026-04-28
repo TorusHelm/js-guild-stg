@@ -149,6 +149,16 @@ function summarizeMessage(message: string) {
   return `${compact.slice(0, 157)}...`;
 }
 
+function startOfMonth(date: Date) {
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
+}
+
+function subtractDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() - days);
+  return next;
+}
+
 function MattermostApp() {
   const [report, setReport] = useState<MattermostReport | null>(null);
   const [loading, setLoading] = useState(true);
@@ -217,6 +227,23 @@ function MattermostApp() {
 
     void load();
   }, [isUnlocked]);
+
+  function applyPresetRange(preset: "quarter" | "month" | "30d" | "90d") {
+    const anchor = report?.generatedAt ? new Date(report.generatedAt) : new Date();
+    const endDate = new Date(anchor);
+    let startDate = startOfQuarter(anchor);
+
+    if (preset === "month") {
+      startDate = startOfMonth(anchor);
+    } else if (preset === "30d") {
+      startDate = subtractDays(anchor, 30);
+    } else if (preset === "90d") {
+      startDate = subtractDays(anchor, 90);
+    }
+
+    setFromDate(toDateInputValue(startDate));
+    setToDate(toDateInputValue(endDate));
+  }
 
   async function handleUnlock(event: Event) {
     event.preventDefault();
@@ -396,87 +423,129 @@ function MattermostApp() {
 
           {!loading && !error && report ? (
             <>
-              <form class="filter-grid">
-                <label class="field-group">
-                  <span class="field-label">С даты</span>
-                  <input
-                    class="text-input"
-                    type="date"
-                    value={fromDate}
-                    min={report.generatedAt ? toDateInputValue(new Date(Date.parse(report.generatedAt) - report.settings.lookbackDays * 86400000)) : undefined}
-                    max={toDate || undefined}
-                    onInput={(event) => setFromDate((event.target as HTMLInputElement).value)}
-                  />
-                </label>
-                <label class="field-group">
-                  <span class="field-label">По дату</span>
-                  <input
-                    class="text-input"
-                    type="date"
-                    value={toDate}
-                    min={fromDate || undefined}
-                    max={report.generatedAt ? toDateInputValue(new Date(report.generatedAt)) : undefined}
-                    onInput={(event) => setToDate((event.target as HTMLInputElement).value)}
-                  />
-                </label>
-                <label class="field-group">
-                  <span class="field-label">Порог, %</span>
-                  <input
-                    class="text-input"
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    value={thresholdPercent}
-                    onInput={(event) => setThresholdPercent((event.target as HTMLInputElement).value)}
-                  />
-                </label>
-                <label class="field-group">
-                  <span class="field-label">Режим подсчета</span>
-                  <select
-                    class="text-input"
-                    value={countMode}
-                    onInput={(event) =>
-                      setCountMode(
-                        (event.target as HTMLSelectElement).value as
-                          | "unique_reactors"
-                          | "all_reactions",
-                      )
-                    }
-                  >
-                    <option value="unique_reactors">Уникальные реакторы</option>
-                    <option value="all_reactions">Все реакции</option>
-                  </select>
-                </label>
-              </form>
+              <div class="settings-surface">
+                <div class="preset-row">
+                  <button class="preset-chip" type="button" onClick={() => applyPresetRange("quarter")}>
+                    Текущий квартал
+                  </button>
+                  <button class="preset-chip" type="button" onClick={() => applyPresetRange("month")}>
+                    Текущий месяц
+                  </button>
+                  <button class="preset-chip" type="button" onClick={() => applyPresetRange("30d")}>
+                    30 дней
+                  </button>
+                  <button class="preset-chip" type="button" onClick={() => applyPresetRange("90d")}>
+                    90 дней
+                  </button>
+                </div>
 
-              <div class="toggle-grid">
-                <label class="toggle-row">
-                  <input
-                    type="checkbox"
-                    checked={includeReplies}
-                    onInput={(event) => setIncludeReplies((event.target as HTMLInputElement).checked)}
-                  />
-                  <span>Учитывать реплаи</span>
-                </label>
-                <label class="toggle-row">
-                  <input
-                    type="checkbox"
-                    checked={includeBots}
-                    onInput={(event) => setIncludeBots((event.target as HTMLInputElement).checked)}
-                  />
-                  <span>Учитывать посты и реакции ботов</span>
-                </label>
-                <label class="toggle-row">
-                  <input
-                    type="checkbox"
-                    checked={countAuthorReactions}
-                    onInput={(event) =>
-                      setCountAuthorReactions((event.target as HTMLInputElement).checked)
-                    }
-                  />
-                  <span>Учитывать реакции автора на свой пост</span>
-                </label>
+                <form class="filter-grid">
+                  <label class="field-card">
+                    <span class="field-kicker">Период</span>
+                    <span class="field-label">С даты</span>
+                    <input
+                      class="text-input"
+                      type="date"
+                      value={fromDate}
+                      min={report.generatedAt ? toDateInputValue(new Date(Date.parse(report.generatedAt) - report.settings.lookbackDays * 86400000)) : undefined}
+                      max={toDate || undefined}
+                      onInput={(event) => setFromDate((event.target as HTMLInputElement).value)}
+                    />
+                  </label>
+                  <label class="field-card">
+                    <span class="field-kicker">Период</span>
+                    <span class="field-label">По дату</span>
+                    <input
+                      class="text-input"
+                      type="date"
+                      value={toDate}
+                      min={fromDate || undefined}
+                      max={report.generatedAt ? toDateInputValue(new Date(report.generatedAt)) : undefined}
+                      onInput={(event) => setToDate((event.target as HTMLInputElement).value)}
+                    />
+                  </label>
+                  <label class="field-card">
+                    <span class="field-kicker">Порог популярности</span>
+                    <span class="field-label">Минимальный процент</span>
+                    <div class="number-input-wrap">
+                      <input
+                        class="text-input text-input-number"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        value={thresholdPercent}
+                        onInput={(event) => setThresholdPercent((event.target as HTMLInputElement).value)}
+                      />
+                      <span class="input-suffix">%</span>
+                    </div>
+                  </label>
+                  <label class="field-card">
+                    <span class="field-kicker">Метрика</span>
+                    <span class="field-label">Режим подсчета</span>
+                    <select
+                      class="text-input"
+                      value={countMode}
+                      onInput={(event) =>
+                        setCountMode(
+                          (event.target as HTMLSelectElement).value as
+                            | "unique_reactors"
+                            | "all_reactions",
+                        )
+                      }
+                    >
+                      <option value="unique_reactors">Уникальные реакторы</option>
+                      <option value="all_reactions">Все реакции</option>
+                    </select>
+                  </label>
+                </form>
+
+                <div class="toggle-grid">
+                  <label class="toggle-card">
+                    <div class="toggle-copy">
+                      <strong>Учитывать реплаи</strong>
+                      <span>Добавлять ответы в тредах в общую выборку.</span>
+                    </div>
+                    <span class="switch">
+                      <input
+                        type="checkbox"
+                        checked={includeReplies}
+                        onInput={(event) => setIncludeReplies((event.target as HTMLInputElement).checked)}
+                      />
+                      <span class="switch-slider" />
+                    </span>
+                  </label>
+                  <label class="toggle-card">
+                    <div class="toggle-copy">
+                      <strong>Учитывать ботов</strong>
+                      <span>Считать посты и реакции, созданные ботами.</span>
+                    </div>
+                    <span class="switch">
+                      <input
+                        type="checkbox"
+                        checked={includeBots}
+                        onInput={(event) => setIncludeBots((event.target as HTMLInputElement).checked)}
+                      />
+                      <span class="switch-slider" />
+                    </span>
+                  </label>
+                  <label class="toggle-card">
+                    <div class="toggle-copy">
+                      <strong>Реакции автора</strong>
+                      <span>Не отбрасывать реакции автора на собственный пост.</span>
+                    </div>
+                    <span class="switch">
+                      <input
+                        type="checkbox"
+                        checked={countAuthorReactions}
+                        onInput={(event) =>
+                          setCountAuthorReactions((event.target as HTMLInputElement).checked)
+                        }
+                      />
+                      <span class="switch-slider" />
+                    </span>
+                  </label>
+                </div>
               </div>
 
               <div class="stats-grid stats-grid-compact">
