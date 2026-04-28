@@ -66,6 +66,24 @@ function copyText(text: string) {
   return navigator.clipboard.writeText(text);
 }
 
+function Header() {
+  return (
+    <header class="site-header">
+      <a class="brand-link" href="./">
+        JS Guild Hub
+      </a>
+      <nav class="header-nav">
+        <a class="header-nav-link active" href="./">
+          Состав
+        </a>
+        <a class="header-nav-link" href="./mattermost.html">
+          Mattermost
+        </a>
+      </nav>
+    </header>
+  );
+}
+
 function App() {
   const [members, setMembers] = useState<GuildMember[]>([]);
   const [status, setStatus] = useState<SyncStatus | null>(null);
@@ -208,6 +226,8 @@ function App() {
 
   return (
     <main class="page-shell">
+      <Header />
+
       <section class="hero-card">
         <p class="eyebrow">JavaScript Guild</p>
         <h1>Синхронизация состава из Outline</h1>
@@ -261,9 +281,6 @@ function App() {
             rel="noreferrer"
           >
             Открыть Actions
-          </a>
-          <a class="action-link" href="./mattermost.html">
-            Mattermost аналитика
           </a>
         </div>
       </section>

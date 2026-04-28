@@ -14,6 +14,7 @@ type MattermostPost = {
   userId: string;
   message: string;
   replyCount: number;
+  rootId: string | null;
   isBot: boolean;
   permalink: string;
   reactions: MattermostReaction[];
@@ -23,6 +24,7 @@ type MattermostUser = {
   id: string;
   username: string;
   displayName: string;
+  isBot?: boolean;
 };
 
 type MattermostReport = {
@@ -64,6 +66,29 @@ type SummaryPost = {
   engagedUsersCount: number;
   thresholdPercent: number;
 };
+
+function startOfQuarter(date: Date) {
+  const quarterStartMonth = Math.floor(date.getMonth() / 3) * 3;
+  return new Date(Date.UTC(date.getFullYear(), quarterStartMonth, 1));
+}
+
+function Header() {
+  return (
+    <header class="site-header">
+      <a class="brand-link" href="./">
+        JS Guild Hub
+      </a>
+      <nav class="header-nav">
+        <a class="header-nav-link" href="./">
+          Состав
+        </a>
+        <a class="header-nav-link active" href="./mattermost.html">
+          Mattermost
+        </a>
+      </nav>
+    </header>
+  );
+}
 
 const reportUrl = "./data/mattermost-report.json";
 const accessStorageKey = "js-guild-stg-access";
@@ -134,6 +159,13 @@ function MattermostApp() {
   const [passwordBusy, setPasswordBusy] = useState(false);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [thresholdPercent, setThresholdPercent] = useState("20");
+  const [countMode, setCountMode] = useState<"unique_reactors" | "all_reactions">(
+    "unique_reactors",
+  );
+  const [includeReplies, setIncludeReplies] = useState(false);
+  const [includeBots, setIncludeBots] = useState(false);
+  const [countAuthorReactions, setCountAuthorReactions] = useState(false);
 
   useEffect(() => {
     const accessToken = window.localStorage.getItem(accessStorageKey);
@@ -167,11 +199,15 @@ function MattermostApp() {
 
         const generatedAt = nextReport.generatedAt ? new Date(nextReport.generatedAt) : new Date();
         const endDate = new Date(generatedAt);
-        const startDate = new Date(generatedAt);
-        startDate.setDate(startDate.getDate() - nextReport.settings.defaultPeriodDays);
+        const startDate = startOfQuarter(generatedAt);
 
         setFromDate(toDateInputValue(startDate));
         setToDate(toDateInputValue(endDate));
+        setThresholdPercent(String(nextReport.settings.thresholdPercent || 20));
+        setCountMode(nextReport.settings.countMode || "unique_reactors");
+        setIncludeReplies(nextReport.settings.includeReplies);
+        setIncludeBots(nextReport.settings.includeBots);
+        setCountAuthorReactions(nextReport.settings.countAuthorReactions);
       } catch (nextError) {
         setError(nextError instanceof Error ? nextError.message : "Не удалось загрузить отчет");
       } finally {
@@ -209,13 +245,20 @@ function MattermostApp() {
 
     const fromTs = new Date(`${fromDate}T00:00:00`).getTime();
     const toTs = new Date(`${toDate}T23:59:59.999`).getTime();
-    const thresholdFraction = report.settings.thresholdPercent / 100;
+    const thresholdNumber = Number.parseFloat(thresholdPercent) || 20;
+    const thresholdFraction = thresholdNumber / 100;
 
     const filteredPosts = report.posts
       .filter((post) => post.createAt >= fromTs && post.createAt <= toTs)
+      .filter((post) => includeReplies || !post.rootId)
+      .filter((post) => includeBots || !report.users[post.userId]?.isBot)
       .map((post) => {
         const filteredReactions = post.reactions.filter((reaction) => {
-          if (!report.settings.countAuthorReactions && reaction.userId === post.userId) {
+          if (!countAuthorReactions && reaction.userId === post.userId) {
+            return false;
+          }
+
+          if (!includeBots && report.users[reaction.userId]?.isBot) {
             return false;
           }
 
@@ -225,8 +268,7 @@ function MattermostApp() {
         const uniqueReactorIds = new Set(filteredReactions.map((reaction) => reaction.userId));
         const engagedUsersCount = uniqueReactorIds.size;
         const reactionsCount = filteredReactions.length;
-        const baseCount =
-          report.settings.countMode === "all_reactions" ? reactionsCount : engagedUsersCount;
+        const baseCount = countMode === "all_reactions" ? reactionsCount : engagedUsersCount;
         const thresholdPercent = report.channel.memberCount
           ? (baseCount / report.channel.memberCount) * 100
           : 0;
@@ -252,10 +294,22 @@ function MattermostApp() {
 
     return {
       filteredPosts,
-      totalPosts: report.posts.filter((post) => post.createAt >= fromTs && post.createAt <= toTs).length,
+      totalPosts: report.posts
+        .filter((post) => post.createAt >= fromTs && post.createAt <= toTs)
+        .filter((post) => includeReplies || !post.rootId)
+        .filter((post) => includeBots || !report.users[post.userId]?.isBot).length,
       matchedPosts: filteredPosts.length,
     };
-  }, [fromDate, report, toDate]);
+  }, [
+    countAuthorReactions,
+    countMode,
+    fromDate,
+    includeBots,
+    includeReplies,
+    report,
+    thresholdPercent,
+    toDate,
+  ]);
 
   if (!isUnlocked) {
     return (
@@ -294,6 +348,8 @@ function MattermostApp() {
 
   return (
     <main class="page-shell">
+      <Header />
+
       <section class="hero-card">
         <p class="eyebrow">Mattermost Analytics</p>
         <h1>Реакции по каналу гильдии</h1>
@@ -313,14 +369,11 @@ function MattermostApp() {
           </article>
           <article class="stat-card">
             <span class="stat-label">Порог</span>
-            <strong>{report ? `${report.settings.thresholdPercent}%` : "—"}</strong>
+            <strong>{thresholdPercent || "20"}%</strong>
           </article>
         </div>
 
         <div class="action-row">
-          <a class="action-link" href="./">
-            Состав гильдии
-          </a>
           <a
             class="action-link"
             href="https://github.com/TorusHelm/js-guild-stg/actions/workflows/sync-mattermost-report.yml"
@@ -366,7 +419,65 @@ function MattermostApp() {
                     onInput={(event) => setToDate((event.target as HTMLInputElement).value)}
                   />
                 </label>
+                <label class="field-group">
+                  <span class="field-label">Порог, %</span>
+                  <input
+                    class="text-input"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value={thresholdPercent}
+                    onInput={(event) => setThresholdPercent((event.target as HTMLInputElement).value)}
+                  />
+                </label>
+                <label class="field-group">
+                  <span class="field-label">Режим подсчета</span>
+                  <select
+                    class="text-input"
+                    value={countMode}
+                    onInput={(event) =>
+                      setCountMode(
+                        (event.target as HTMLSelectElement).value as
+                          | "unique_reactors"
+                          | "all_reactions",
+                      )
+                    }
+                  >
+                    <option value="unique_reactors">Уникальные реакторы</option>
+                    <option value="all_reactions">Все реакции</option>
+                  </select>
+                </label>
               </form>
+
+              <div class="toggle-grid">
+                <label class="toggle-row">
+                  <input
+                    type="checkbox"
+                    checked={includeReplies}
+                    onInput={(event) => setIncludeReplies((event.target as HTMLInputElement).checked)}
+                  />
+                  <span>Учитывать реплаи</span>
+                </label>
+                <label class="toggle-row">
+                  <input
+                    type="checkbox"
+                    checked={includeBots}
+                    onInput={(event) => setIncludeBots((event.target as HTMLInputElement).checked)}
+                  />
+                  <span>Учитывать посты и реакции ботов</span>
+                </label>
+                <label class="toggle-row">
+                  <input
+                    type="checkbox"
+                    checked={countAuthorReactions}
+                    onInput={(event) =>
+                      setCountAuthorReactions((event.target as HTMLInputElement).checked)
+                    }
+                  />
+                  <span>Учитывать реакции автора на свой пост</span>
+                </label>
+              </div>
 
               <div class="stats-grid stats-grid-compact">
                 <article class="stat-card">
@@ -380,9 +491,7 @@ function MattermostApp() {
                 <article class="stat-card">
                   <span class="stat-label">Режим подсчета</span>
                   <strong>
-                    {report.settings.countMode === "unique_reactors"
-                      ? "Уникальные реакторы"
-                      : "Все реакции"}
+                    {countMode === "unique_reactors" ? "Уникальные реакторы" : "Все реакции"}
                   </strong>
                 </article>
               </div>
@@ -405,16 +514,8 @@ function MattermostApp() {
               </dd>
             </div>
             <div>
-              <dt>Окно загрузки</dt>
+              <dt>Окно загрузки из API</dt>
               <dd>{report ? `${report.settings.lookbackDays} дней` : "—"}</dd>
-            </div>
-            <div>
-              <dt>Учет реплаев</dt>
-              <dd>{report?.settings.includeReplies ? "Да" : "Нет"}</dd>
-            </div>
-            <div>
-              <dt>Учет ботов</dt>
-              <dd>{report?.settings.includeBots ? "Да" : "Нет"}</dd>
             </div>
           </dl>
 

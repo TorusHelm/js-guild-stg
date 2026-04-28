@@ -108,17 +108,7 @@ async function main() {
   const members = await getAllPages((page) => `/channels/${channel.id}/members?page=${page}&per_page=200`);
   const rawPosts = await getPosts(channel.id, since);
 
-  const filteredPosts = rawPosts.filter((post) => {
-    if (!includeReplies && post.root_id) {
-      return false;
-    }
-
-    if (!post.message?.trim()) {
-      return false;
-    }
-
-    return true;
-  });
+  const filteredPosts = rawPosts.filter((post) => post.message?.trim());
 
   const uniqueUserIds = [...new Set(filteredPosts.map((post) => post.user_id))];
   const users = {};
@@ -164,6 +154,7 @@ async function main() {
       userId: post.user_id,
       message: post.message,
       replyCount: post.reply_count || 0,
+      rootId: post.root_id || null,
       isBot: Boolean(user?.isBot),
       permalink: `${baseUrl}/${teamSlug || "main"}/pl/${post.id}`,
       reactions,
