@@ -3,6 +3,9 @@ name: Deploy Pages
 on:
   push:
     branches: ["main"]
+  workflow_run:
+    workflows: ["Sync guild roster"]
+    types: ["completed"]
   workflow_dispatch:
 
 env:
@@ -19,6 +22,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
