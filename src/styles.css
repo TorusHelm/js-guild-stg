@@ -1,0 +1,251 @@
+:root {
+  font-family:
+    "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: #f3efe6;
+  background:
+    radial-gradient(circle at top left, rgba(231, 157, 78, 0.32), transparent 28%),
+    radial-gradient(circle at 85% 15%, rgba(74, 120, 102, 0.4), transparent 22%),
+    linear-gradient(180deg, #1a1713 0%, #11100d 100%);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+a {
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+button:hover,
+a:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+code {
+  font-family:
+    "IBM Plex Mono", "SFMono-Regular", monospace;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.35rem;
+}
+
+a {
+  color: #f0c98d;
+}
+
+.page-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0 56px;
+}
+
+.hero-card,
+.panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 17, 15, 0.78);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+}
+
+.hero-card {
+  border-radius: 28px;
+  padding: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  color: #d7ab71;
+}
+
+h1,
+h2,
+h3 {
+  font-family:
+    "IBM Plex Serif", "Georgia", serif;
+  line-height: 1.1;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 4vw, 4.1rem);
+}
+
+.hero-copy {
+  max-width: 62ch;
+  margin: 1rem 0 0;
+  color: rgba(243, 239, 230, 0.8);
+}
+
+.stats-grid,
+.content-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.stats-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 24px;
+}
+
+.stat-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stat-label {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: rgba(243, 239, 230, 0.72);
+  font-size: 0.92rem;
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.action-button,
+.action-link {
+  border-radius: 999px;
+  padding: 0.9rem 1.15rem;
+  border: 1px solid transparent;
+  text-decoration: none;
+  font: inherit;
+}
+
+.action-button {
+  background: #e0a458;
+  color: #17130d;
+  cursor: pointer;
+}
+
+.action-button.secondary,
+.action-link {
+  background: transparent;
+  color: #f3efe6;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.content-grid {
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.95fr);
+  margin-top: 18px;
+}
+
+.panel {
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.panel-header h2,
+h3 {
+  margin: 0;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.9rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+th {
+  color: rgba(243, 239, 230, 0.72);
+  font-weight: 500;
+}
+
+.meta-list {
+  margin: 0;
+}
+
+.meta-list div {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.meta-list dt {
+  color: rgba(243, 239, 230, 0.66);
+}
+
+.meta-list dd {
+  margin: 0.3rem 0 0;
+}
+
+.warning-list,
+.steps-list {
+  padding-left: 1.2rem;
+}
+
+.empty-state,
+.error-state {
+  color: rgba(243, 239, 230, 0.72);
+}
+
+.error-state {
+  color: #ffb4ab;
+}
+
+@media (max-width: 900px) {
+  .stats-grid,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-shell {
+    width: min(100% - 20px, 1180px);
+    padding-top: 20px;
+  }
+
+  .hero-card,
+  .panel {
+    padding: 18px;
+    border-radius: 20px;
+  }
+}

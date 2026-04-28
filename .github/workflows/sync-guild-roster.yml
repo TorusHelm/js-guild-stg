@@ -1,0 +1,46 @@
+name: Sync guild roster
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Sync members from Outline
+        env:
+          OUTLINE_BASE_URL: ${{ secrets.OUTLINE_BASE_URL }}
+          OUTLINE_API_KEY: ${{ secrets.OUTLINE_API_KEY }}
+          OUTLINE_DOCUMENT_URL: ${{ secrets.OUTLINE_DOCUMENT_URL }}
+          OUTLINE_DOCUMENT_ID: ${{ secrets.OUTLINE_DOCUMENT_ID }}
+        run: npm run sync:outline
+
+      - name: Build site
+        run: npm run build
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: sync guild roster"
+          git push

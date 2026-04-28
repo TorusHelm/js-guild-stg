@@ -1,0 +1,12 @@
+{
+  "source": {
+    "outlineBaseUrl": "https://outline.gospodaprogrammisty.ru",
+    "documentUrl": "https://outline.gospodaprogrammisty.ru/doc/javascript-FxjTgSQD6R#h-sostav-uchastnikov",
+    "tableHint": "Гильдии -> javascript -> Состав участников"
+  },
+  "syncedAt": null,
+  "memberCount": 1,
+  "warnings": [
+    "Реальная синхронизация еще не запускалась. Заполни GitHub Secrets и выполни workflow вручную."
+  ]
+}
