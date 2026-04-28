@@ -1,7 +1,152 @@
 [
   {
     "number": 1,
-    "fullName": "Пример Участник",
-    "email": "member@example.com"
+    "fullName": "Орлов Марк Денисович",
+    "email": "mark.o@bnovo.ru"
+  },
+  {
+    "number": 2,
+    "fullName": "Заварин Андрей Николаевич",
+    "email": "a.zavarin@smartway.today"
+  },
+  {
+    "number": 3,
+    "fullName": "Лавренов Сергей Владимирович",
+    "email": "sergey.l@bnovo.ru"
+  },
+  {
+    "number": 4,
+    "fullName": "Пискунов Владислав Андреевич",
+    "email": "v.piskunov@smartway.today"
+  },
+  {
+    "number": 5,
+    "fullName": "Федорова Дарья Сергеевна",
+    "email": "fedorova@smartway.today"
+  },
+  {
+    "number": 6,
+    "fullName": "Янчев Алексей Юрьевич",
+    "email": "a.yanchev@smartway.today"
+  },
+  {
+    "number": 7,
+    "fullName": "Матюшенко Михаил Дмитриевич",
+    "email": "m.matyushenko@smartway.today"
+  },
+  {
+    "number": 8,
+    "fullName": "Дюжева Анна Николаевна",
+    "email": "a.dyuzheva@smartway.today"
+  },
+  {
+    "number": 8,
+    "fullName": "Ворожейкина Кристина Александровна",
+    "email": "k.vorozheykina@smartway.today"
+  },
+  {
+    "number": 10,
+    "fullName": "Сафронов Павел Игоревич",
+    "email": "p.safronov@smartway.today"
+  },
+  {
+    "number": 11,
+    "fullName": "Арзамасцева Анастасия Андреевна",
+    "email": "a.arzamasceva@smartway.today"
+  },
+  {
+    "number": 12,
+    "fullName": "Кузнецов Павел Дмитриевич",
+    "email": "p.kuznetsov@bnovo.ru"
+  },
+  {
+    "number": 13,
+    "fullName": "Шмельков Максим Сергеевич",
+    "email": "maxim.s@bnovo.ru"
+  },
+  {
+    "number": 14,
+    "fullName": "Сапожников Алексей Аркадьевич",
+    "email": "alexey.s@bnovo.ru"
+  },
+  {
+    "number": 15,
+    "fullName": "Сулейман Шах Александр Мирвайсович",
+    "email": "alexander.sh@bnovo.ru"
+  },
+  {
+    "number": 16,
+    "fullName": "Черепанов Лев Вячеславович",
+    "email": "l.cherepanov@bnovo.ru"
+  },
+  {
+    "number": 17,
+    "fullName": "Ежова Ксения Валерьевна",
+    "email": "k.ezhova@smartway.today"
+  },
+  {
+    "number": 18,
+    "fullName": "Мыльников Кирилл Игоревич",
+    "email": "k.mylnikov@smartway.today"
+  },
+  {
+    "number": 19,
+    "fullName": "Степанов Даниил Александрович",
+    "email": "d.stepanov@smartway.today"
+  },
+  {
+    "number": 20,
+    "fullName": "Князев Сергей Николаевич",
+    "email": "s.knyazev@smartway.today"
+  },
+  {
+    "number": 21,
+    "fullName": "Копылов Владимир Вячеславович",
+    "email": "v.kopilov@smartway.today"
+  },
+  {
+    "number": 22,
+    "fullName": "Смирнов Максим Сергеевич",
+    "email": "smirnov@smartway.today"
+  },
+  {
+    "number": 23,
+    "fullName": "Яхтина Виктория Сергеевна",
+    "email": "v.yakhtina@smartway.today"
+  },
+  {
+    "number": 24,
+    "fullName": "Стофорандов Георгий Константинович",
+    "email": "g.stoforandov@smartway.today"
+  },
+  {
+    "number": 25,
+    "fullName": "Озёрский Максим Андреевич",
+    "email": "m.ozerskii@smartway.today"
+  },
+  {
+    "number": 26,
+    "fullName": "Полянский Иван Денисович",
+    "email": "i.polianskii@zabroniryi.ru"
+  },
+  {
+    "number": 27,
+    "fullName": "Мазуренко Наталья Николаевна",
+    "email": "prog15@zabroniryi.ru"
+  },
+  {
+    "number": 28,
+    "fullName": "Грачева Ольга Александровна",
+    "email": "o.gracheva@zabroniryi.ru"
+  },
+  {
+    "number": 29,
+    "fullName": "Бец Максим Геннадьевич",
+    "email": "prog16@zabroniryi.ru"
+  },
+  {
+    "number": 30,
+    "fullName": "Курошин Дмитрий Романович",
+    "email": "d.kuroshin@zabroniryi.ru"
   }
 ]
