@@ -96,6 +96,8 @@ const accessStorageKey = "js-guild-stg-access";
 const sitePasswordHash = import.meta.env.VITE_SITE_PASSWORD_HASH ?? "";
 const passwordSalt = "js-guild-stg-site-access-v1";
 const passwordIterations = 120000;
+const CalendarDate = "calendar-date" as any;
+const CalendarMonth = "calendar-month" as any;
 
 async function derivePasswordHash(password: string) {
   const encoder = new TextEncoder();
@@ -173,6 +175,13 @@ function formatDateLabel(value: string) {
 function readCalendarValue(event: Event) {
   const target = event.currentTarget as HTMLElement & { value?: string };
   return target.value ?? "";
+}
+
+function handleCalendarChange(event: Event, setValue: (value: string) => void) {
+  const nextValue = readCalendarValue(event);
+  if (nextValue) {
+    setValue(nextValue);
+  }
 }
 
 function MattermostApp() {
@@ -477,15 +486,10 @@ function MattermostApp() {
                         class="calendar-popover"
                         style={{ positionAnchor: "--from-date-trigger" }}
                       >
-                        <calendar-date
+                        <CalendarDate
                           class="cally-surface"
                           value={fromDate}
-                          onChange={(event) => {
-                            const nextValue = readCalendarValue(event);
-                            if (nextValue) {
-                              setFromDate(nextValue);
-                            }
-                          }}
+                          onChange={(event: Event) => handleCalendarChange(event, setFromDate)}
                         >
                           <svg
                             aria-label="Previous"
@@ -505,8 +509,8 @@ function MattermostApp() {
                           >
                             <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                           </svg>
-                          <calendar-month />
-                        </calendar-date>
+                          <CalendarMonth />
+                        </CalendarDate>
                       </div>
                     </div>
                   </label>
@@ -531,15 +535,10 @@ function MattermostApp() {
                         class="calendar-popover"
                         style={{ positionAnchor: "--to-date-trigger" }}
                       >
-                        <calendar-date
+                        <CalendarDate
                           class="cally-surface"
                           value={toDate}
-                          onChange={(event) => {
-                            const nextValue = readCalendarValue(event);
-                            if (nextValue) {
-                              setToDate(nextValue);
-                            }
-                          }}
+                          onChange={(event: Event) => handleCalendarChange(event, setToDate)}
                         >
                           <svg
                             aria-label="Previous"
@@ -559,8 +558,8 @@ function MattermostApp() {
                           >
                             <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                           </svg>
-                          <calendar-month />
-                        </calendar-date>
+                          <CalendarMonth />
+                        </CalendarDate>
                       </div>
                     </div>
                   </label>
