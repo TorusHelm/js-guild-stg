@@ -7,9 +7,10 @@
 - дает быстрые кнопки для копирования ФИО и всех email
 - запускается вручную через `GitHub Actions`
 
-Сайт:
+## Links
 
-- https://torushelm.github.io/js-guild-stg/
+- Site: https://torushelm.github.io/js-guild-stg/
+- Actions: https://github.com/TorusHelm/js-guild-stg/actions
 
 ## Что уже есть
 
