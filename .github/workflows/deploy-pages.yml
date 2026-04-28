@@ -36,7 +36,7 @@ jobs:
       - name: Derive site access hash
         env:
           SITE_ACCESS_PASSWORD: ${{ secrets.SITE_ACCESS_PASSWORD }}
-        run: npm run derive:site-password >> $GITHUB_ENV
+        run: node scripts/derive-site-password-hash.mjs >> $GITHUB_ENV
 
       - name: Build app
         run: npm run build
